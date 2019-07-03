@@ -1,30 +1,61 @@
-<head>
-<style type="text/css" media="screen">
-.simple-subscription-form {
-  background: #0c3e5f;
-  color: #fefefe;
-  padding: 2rem;
-  border-radius: 0;
-}
+<!doctype html>
 
-.simple-subscription-form .button {
-  margin-bottom: 0;
-  border-radius: 0 0 0 0;
-}
-</style>
+
+<html>
+<head>
+	<style type="text/css" media="screen">
+		.simple-subscription-form {
+  			background: #0c3e5f;
+  			color: #fefefe;
+  			padding: 2rem;
+  			border-radius: 0;
+		}
+
+		.simple-subscription-form .button {
+  			margin-bottom: 0;
+  			border-radius: 0 0 0 0;
+		}
+	</style>
+
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
 
 </head>
-<div class="simple-subscription-form">
-  <form action= "/submitForm" method="post">
-    <h4>Subscribe</h4>
-    <p>Receive updates on bitcoin prices every day :</p>
-    <div class="input-group">
-      <span class="input-group-label">
-        <i class="fa fa-envelope"></i>
-      </span>
-      <input class="input-group-field" name="email" type="email" placeholder="email" required>
-      <input class="input-group-field" name="name" type="name" placeholder="name" required>
-      <button class="button" type=submit">Sign up now</button>
-  </form>
-</div>
+
+
+<body>
+	<div class="simple-subscription-form">
+  		<form id="submitForm" action= "/submitForm" method="POST">
+        		<h4>Subscribe</h4>
+       			 <p>Receive updates on bitcoin prices every day :</p>
+        		<div class="input-group">
+        		<span class="input-group-label">
+        			<i class="fa fa-envelope"></i>
+        		</span>
+       			<input class="input-group-field" name="email" type="email" placeholder="email" required>
+       			<input class="input-group-field" name="name" type="name" placeholder="name" required>
+       			<button class="button" type=submit">Sign up now</button>
+  		</form>
+	</div>
+
+
+	<script type="text/javascript">
+
+		$("#submitForm").submit(function(e) {
+			e.preventDefault;
+			console.log(location.href);			
+			var form = $(this);
+			$.ajax({
+				type: "POST",
+				url: $(form).attr('action'),				
+				data: form.serialize(),
+				success: function(data){
+					$(form)[0].reset();
+				}
+			});
+			return false;
+		});
+	</script>
+</body>
+
+<html>
 

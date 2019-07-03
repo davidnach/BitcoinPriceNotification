@@ -16,18 +16,6 @@ AWS.config.update({
 
 var dynamodb = new AWS.DynamoDB();
 
-var params = {
-	TableName: "EmailSubscriber",
-	Item: {
-		"emailAddress":{
-			S: "davidnachson@gmail.com"
-		},
-		"name": {
-			S: "david"
-		}
-	}
-};
-
 
 
 
@@ -39,6 +27,19 @@ router.get('/', (req, res) => res.sendFile(path.join(__dirname,'index.html')));
 
 
 router.post('/submitForm', function(req,res) {
+	var params = {
+		 TableName: "EmailSubscriber",
+		 Item: {
+			 "emailAddress" :{
+				 S :  req.body.email
+			 },
+			 "name" : {
+				 S :  req.body.name
+			 }
+		}
+	
+	};
+	
 	dynamodb.putItem(params, function(err,data) {
 		if(err){
 			res.status(err).end();
@@ -48,6 +49,8 @@ router.post('/submitForm', function(req,res) {
 			res.status(201).end();
 		}
 	});
+	
+	res.end();
 	console.log(req.body);
 });
 	
