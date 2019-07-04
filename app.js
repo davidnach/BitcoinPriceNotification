@@ -14,6 +14,7 @@ AWS.config.update({
 });
 
 
+var sns = new AWS.SNS();
 var dynamodb = new AWS.DynamoDB();
 
 
@@ -27,7 +28,7 @@ router.get('/', (req, res) => res.sendFile(path.join(__dirname,'index.html')));
 
 
 router.post('/submitForm', function(req,res) {
-	var params = {
+	var item = {
 		 TableName: "EmailSubscriber",
 		 Item: {
 			 "emailAddress" :{
@@ -40,13 +41,29 @@ router.post('/submitForm', function(req,res) {
 	
 	};
 	
-	dynamodb.putItem(params, function(err,data) {
+	dynamodb.putItem(item, function(err,data) {
 		if(err){
 			res.status(err).end();
 			console.log('DDB error: ' + err);
 		} else {
+			var params = {
+				Protocol: 'EMAIL',
+				TopicArn: "arn:aws:sns:us-east-2:474675807735:bitcoinPriceNotification",
+				Endpoint: req.body.email
+			}
+			var subscribePromise = sns.subscribe(params).promise();
+
+			subscribePromise.then(
+  				function(data) {
+    					console.log("Subscription ARN is " + data.SubscriptionArn);
+  					}).catch(
+    						function(err) {
+    						console.error(err, err.stack);
+  					});
+
 
 			res.status(201).end();
+
 		}
 	});
 	
